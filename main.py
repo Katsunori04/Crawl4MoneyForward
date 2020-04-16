@@ -1,7 +1,8 @@
 from selenium import webdriver
 import chromedriver_binary
 from login_information.login import *
-
+import pandas as pd
+import lxml
 def loginMoneyForward(target_url):
     chrome_option = webdriver.ChromeOptions()
     # Chromeインスタンスを作成する
@@ -24,6 +25,8 @@ def loginMoneyForward(target_url):
     login_password_button = driver.find_element_by_xpath("/html/body/main/div/div/div/div/div[1]/section/form/div[2]/div/div[3]/input")
     login_password_button.click()
 
+    html_source = driver.page_source
+    print(pd.read_html(html_source))
 
 
 target_url = "https://moneyforward.com/cf"
