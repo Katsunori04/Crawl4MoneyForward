@@ -1,13 +1,10 @@
 from selenium import webdriver
 import chromedriver_binary
-from login_information.login import *
 import pandas as pd
-import lxml
-def loginMoneyForward(target_url):
-    chrome_option = webdriver.ChromeOptions()
-    # Chromeインスタンスを作成する
-    driver = webdriver.Chrome(options = chrome_option)
-    driver.get(target_url)
+#パスワードを配置
+from login_information.login import *
+
+def loginMoneyForward(driver):
 
     #e-mailアドレスでログインを選択
     login_button = driver.find_element_by_xpath("/html/body/main/div/div/div/div/div[1]/section/div/div/div[2]/div/a[1]")
@@ -25,9 +22,41 @@ def loginMoneyForward(target_url):
     login_password_button = driver.find_element_by_xpath("/html/body/main/div/div/div/div/div[1]/section/form/div[2]/div/div[3]/input")
     login_password_button.click()
 
-    html_source = driver.page_source
-    print(pd.read_html(html_source))
+    return driver
 
 
-target_url = "https://moneyforward.com/cf"
-loginMoneyForward(target_url)
+def table2dataframe(driver):
+    #Tableを解析
+    table = driver.find_element_by_id("cf-detail-table")
+
+    #Tableのヘッダーをリスト化
+    thead = table.find_element_by_tag_name("thead").find_element_by_tag_name("tr").find_elements_by_tag_name("th")
+    header_list = []
+    for elm in thead:
+       header_list.append(elm.text)
+
+    #TableのBodyをリスト化
+    tbody = table.find_element_by_tag_name("tbody").find_elements_by_tag_name("tr")
+    elms_list = []
+    for rows in tbody:
+        row = rows.find_elements_by_tag_name("td")
+        elms = []
+        for elm in row:
+            elms.append(elm.text)
+        elms_list.append(elms)
+
+    dataframe = pd.DataFrame(elms_list, columns=header_list)
+    return dataframe
+
+def main():
+    target_url = "https://moneyforward.com/cf"
+    chrome_option = webdriver.ChromeOptions()
+    # Chromeインスタンスを作成する
+    driver = webdriver.Chrome(options=chrome_option)
+    driver.get(target_url)
+    driver = loginMoneyForward(driver)
+    dataframe = table2dataframe(driver)
+
+    print(dataframe)
+
+main()
