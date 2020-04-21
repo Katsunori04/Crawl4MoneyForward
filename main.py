@@ -1,6 +1,7 @@
 from selenium import webdriver
 import chromedriver_binary
 import pandas as pd
+import re
 #パスワードを配置
 from login_information.login import *
 
@@ -48,6 +49,13 @@ def table2dataframe(driver):
     dataframe = pd.DataFrame(elms_list, columns=header_list)
     return dataframe
 
+def preprocessing_dataframe(dataframe):
+    #Columnの\n以降の文字列を削除
+    dataframe = dataframe.rename(columns=lambda column: re.sub("\n.*", "", column))
+    dataframe = dataframe[["日付", "内容", "金額（円）","保有金融機関", "大項目", "中項目"]]
+    return dataframe
+
+
 def main():
     target_url = "https://moneyforward.com/cf"
     chrome_option = webdriver.ChromeOptions()
@@ -57,6 +65,6 @@ def main():
     driver = loginMoneyForward(driver)
     dataframe = table2dataframe(driver)
 
+    dataframe= preprocessing_dataframe(dataframe)
     print(dataframe)
-
 main()
