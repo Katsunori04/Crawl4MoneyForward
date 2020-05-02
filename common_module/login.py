@@ -1,8 +1,15 @@
 import time
+from selenium import webdriver
+import chromedriver_binary
 
 from login_information.login import *
 
-def loginMoneyForward(driver):
+def loginMoneyForward(target_url):
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument('--headless')
+    # Chromeインスタンスを作成する
+    driver = webdriver.Chrome(options=chrome_option)
+    driver.get(target_url)
 
     #e-mailアドレスでログインを選択
     login_button = driver.find_element_by_xpath("/html/body/main/div/div/div/div/div[1]/section/div/div/div[2]/div/a[1]")

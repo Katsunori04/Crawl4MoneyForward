@@ -1,5 +1,4 @@
-from selenium import webdriver
-import chromedriver_binary
+
 import time
 from common_module.login import *
 
@@ -15,14 +14,11 @@ def click_reloads(driver):
 
 def main():
     target_url = "https://moneyforward.com/accounts"
-    chrome_option = webdriver.ChromeOptions()
-    # Chromeインスタンスを作成する
-    driver = webdriver.Chrome(options=chrome_option)
-    driver.get(target_url)
-    driver = loginMoneyForward(driver)
+
+    driver = loginMoneyForward(target_url)
     for i in range(3):
         click_reloads(driver)
-        time.sleep(5)
+        time.sleep(2)
 
 
 main()

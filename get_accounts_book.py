@@ -51,12 +51,8 @@ def get_income(dataframe):
 
 def main():
     target_url = "https://moneyforward.com/cf"
-    chrome_option = webdriver.ChromeOptions()
-    # Chromeインスタンスを作成する
-    driver = webdriver.Chrome(options=chrome_option)
-    driver.get(target_url)
-    driver = loginMoneyForward(driver)
 
+    driver = loginMoneyForward(target_url)
     dataframe = table2dataframe(driver)
 
     spending = get_spending(dataframe)
