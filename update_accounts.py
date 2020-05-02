@@ -16,9 +16,10 @@ def main():
     target_url = "https://moneyforward.com/accounts"
 
     driver = loginMoneyForward(target_url)
-    for i in range(3):
+
+    #連続で更新するとエラーが発生する場合があるため、更新処理を5回試行
+    for i in range(5):
         click_reloads(driver)
-        time.sleep(2)
 
 
 main()
