@@ -47,24 +47,41 @@ def table2dataframe(driver):
         elms_list.append(elms)
 
     dataframe = pd.DataFrame(elms_list, columns=header_list)
+
     return dataframe
 
 def preprocessing_dataframe(dataframe):
     #Columnの\n以降の文字列を削除
     dataframe = dataframe.rename(columns=lambda column: re.sub("\n.*", "", column))
     dataframe = dataframe[["日付", "内容", "金額（円）","保有金融機関", "大項目", "中項目"]]
+    dataframe = dataframe[~dataframe["金額（円）"].str.contains("(振替)")]
+    dataframe["金額（円）"] = dataframe["金額（円）"].apply(int)
     return dataframe
 
+#Todo 型変換がうまく行っていない
+def get_spending(dataframe):
+    dataframe = preprocessing_dataframe(dataframe)
+    dataframe = dataframe[dataframe["金額（円）"] < 0]
+    return dataframe
+
+#Todo 型変換がうまく行っていない
+def get_income(dataframe):
+    dataframe = preprocessing_dataframe(dataframe)
+    dataframe = dataframe[dataframe["金額（円）"] > 0]
+    return dataframe
 
 def main():
     target_url = "https://moneyforward.com/cf"
     chrome_option = webdriver.ChromeOptions()
     # Chromeインスタンスを作成する
+
     driver = webdriver.Chrome(options=chrome_option)
     driver.get(target_url)
     driver = loginMoneyForward(driver)
     dataframe = table2dataframe(driver)
 
-    dataframe= preprocessing_dataframe(dataframe)
-    print(dataframe)
+    spending = get_spending(dataframe)
+    income = get_income(dataframe)
+    spending.to_csv("spending.csv")
+    income.to_csv("income.csv")
 main()
