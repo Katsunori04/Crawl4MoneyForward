@@ -1,5 +1,3 @@
-from selenium import webdriver
-import chromedriver_binary
 import time
 
 from login_information.login import *

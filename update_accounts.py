@@ -17,7 +17,6 @@ def main():
     target_url = "https://moneyforward.com/accounts"
     chrome_option = webdriver.ChromeOptions()
     # Chromeインスタンスを作成する
-
     driver = webdriver.Chrome(options=chrome_option)
     driver.get(target_url)
     driver = loginMoneyForward(driver)
